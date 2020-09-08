@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,6 +49,16 @@ class User
      * @ORM\Column(type="integer")
      */
     private int $status;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="user_id")
+     */
+    private $tasks;
+
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -166,6 +178,45 @@ class User
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * @param Task $task
+     * @return $this
+     */
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setUserId($this->getId());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Task $task
+     * @return $this
+     */
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getUserId() === $this->getId()) {
+                $task->setUserId(null);
+            }
+        }
 
         return $this;
     }

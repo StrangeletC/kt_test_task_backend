@@ -24,8 +24,10 @@ services:
     volumes:
       - .:/app
   db:
-    image: postgres
+    image: postgres:12
     restart: always
+    ports:
+      - 5499:5432
     environment:
       POSTGRES_PASSWORD: db_password
       POSTGRES_USER: db_user

@@ -24,7 +24,7 @@ services:
     volumes:
       - .:/app
   db:
-    image: postgres
+    image: postgres:12
     restart: always
     environment:
       POSTGRES_PASSWORD: db_password

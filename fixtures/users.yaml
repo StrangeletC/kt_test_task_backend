@@ -1,0 +1,7 @@
+App\Entity\User:
+  user_{1}:
+    username: ivan
+    firstName: Ivan
+    lastName: Ivanov
+    email: ivan@example.com
+    password: password

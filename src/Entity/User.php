@@ -57,7 +57,7 @@ class User implements UserInterface
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
      */
     protected int $id;
 
@@ -119,7 +119,11 @@ class User implements UserInterface
     /**
      * @var Collection|Task[]
      *
-     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="user_id")
+     * @ORM\OneToMany(
+     *     targetEntity="Task",
+     *     mappedBy="user",
+     *     fetch="EAGER"
+     * )
      */
     private $tasks;
 

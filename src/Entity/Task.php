@@ -48,19 +48,21 @@ class Task
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
      *
      * @Groups({"task:read"})
      */
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
+     * @var User|null $user
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="tasks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      * @Groups({"task:read", "task:write"})
      */
-    private User $user;
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -126,10 +128,10 @@ class Task
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @return $this
      */
-    public function setUser(User $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 

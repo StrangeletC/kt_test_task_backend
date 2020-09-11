@@ -80,6 +80,44 @@ class UserResourceTest extends ApiTestCase
         self::assertMatchesResourceItemJsonSchema(User::class);
     }
 
+    public function testCreateInvalidUser(): void
+    {
+        $route = '/api/users';
+
+        $invalidUser = [
+            'firstName' => 'Steve',
+            'lastName' => 'Mops',
+            'email' => "stevemops@example.com",
+            'password' => 'qwerty'
+        ];
+
+        static::createClient()->request(
+            'POST',
+            $route,
+            [
+                'json' => $invalidUser
+            ]
+        );
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        self::assertJsonContains(
+            [
+                '@context' => '/api/contexts/ConstraintViolationList',
+                '@type' => 'ConstraintViolationList',
+                'hydra:title' => 'An error occurred',
+                'hydra:description' => 'username: This value should not be blank.',
+                'violations' => [
+                    [
+                        'propertyPath' => 'username',
+                        'message' => 'This value should not be blank.',
+                    ],
+                ],
+            ],
+        );
+    }
+
     public function testUpdateUser(): void
     {
         $client = static::createClient();

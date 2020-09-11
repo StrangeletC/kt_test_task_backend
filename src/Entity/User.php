@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,8 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="`user`")
  *
  * @ApiResource(
- *     normalizationContext={"groups"={"user"}},
- *     denormalizationContext={"groups"={"user"}},
+ *     normalizationContext={"groups"={"user:read"}},
+ *     denormalizationContext={"groups"={"user:write"}},
  *     itemOperations={
  *          "get"={
  *              "method"="GET",
@@ -32,9 +33,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "path"="/user/{id}",
  *              "requirements"={"id"="\d+"},
  *          },
+ *          "update"={
+ *              "method"="PUT",
+ *              "path"="/user/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
  *     },
- *     collectionOperations={}
+ *     collectionOperations={
+ *          "create"={
+ *              "method"="POST",
+ *              "path"="/users",
+ *          },
+ *     }
  * )
+ *
+ * @UniqueEntity(fields={"username"})
+ * @UniqueEntity(fields={"email"})
  */
 class User implements UserInterface
 {
@@ -58,7 +72,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      *
-     * @Groups({"user"})
+     * @Groups({"user:read", "user:write"})
      */
     protected string $username;
 
@@ -71,7 +85,7 @@ class User implements UserInterface
      *     max = 255,
      * )
      *
-     * @Groups({"user"})
+     * @Groups({"user:read", "user:write"})
      */
     protected $firstName = null;
 
@@ -84,7 +98,7 @@ class User implements UserInterface
      *     max = 255,
      * )
      *
-     * @Groups({"user"})
+     * @Groups({"user:read", "user:write"})
      */
     protected $lastName = null;
 
@@ -94,7 +108,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\Email()
      *
-     * @Groups({"user"})
+     * @Groups({"user:read", "user:write"})
      */
     private string $email;
 
@@ -102,6 +116,8 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=255)
+     *
+     * @Groups({"user:write"})
      */
     private string $password;
 
@@ -111,6 +127,8 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      *
      * @Groups({"user"})
+     *
+     * @Groups({"user:read"})
      */
     private int $status;
 

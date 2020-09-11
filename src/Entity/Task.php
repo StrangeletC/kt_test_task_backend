@@ -12,8 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=TaskRepository::class)
  *
  * @ApiResource(
- *     normalizationContext={"groups"={"task"}},
- *     denormalizationContext={"groups"={"task"}},
+ *     normalizationContext={"groups"={"task:read"}},
+ *     denormalizationContext={"groups"={"task:write"}},
  *     itemOperations={
  *          "get"={
  *              "method"="GET",
@@ -25,10 +25,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "path"="/task/{id}",
  *              "requirements"={"id"="\d+"},
  *          },
+ *          "update"={
+ *              "method"="PUT",
+ *              "path"="/task/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
  *     },
  *     collectionOperations={
  *          "get"={
  *              "method"="GET",
+ *              "path"="/tasks",
+ *          },
+ *          "create"={
+ *              "method"="POST",
  *              "path"="/tasks",
  *          },
  *     },
@@ -40,6 +49,8 @@ class Task
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @Groups({"task:read"})
      */
     private int $id;
 
@@ -47,7 +58,7 @@ class Task
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
-     * @Groups({"task"})
+     * @Groups({"task:read", "task:write"})
      */
     private User $user;
 
@@ -55,6 +66,8 @@ class Task
      * @ORM\Column(type="string", length=255)
      *
      * @Groups({"task"})
+     *
+     * @Groups({"task:read", "task:write"})
      */
     private string $title;
 
@@ -64,6 +77,8 @@ class Task
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Groups({"task"})
+     *
+     * @Groups({"task:read", "task:write"})
      */
     private $description = null;
 
@@ -71,6 +86,8 @@ class Task
      * @ORM\Column(type="boolean", length=255)
      *
      * @Groups({"task"})
+     *
+     * @Groups({"task:read"})
      */
     private bool $complete;
 
@@ -78,6 +95,8 @@ class Task
      * @ORM\Column(type="datetime")
      *
      * @Groups({"task"})
+     *
+     * @Groups({"task:read"})
      */
     private DateTimeInterface $created_at;
 
@@ -86,7 +105,7 @@ class Task
      *
      * @ORM\Column(type="datetime", nullable=true)
      *
-     * @Groups({"task"})
+     * @Groups({"task:read"})
      */
     private $deleted_at = null;
 

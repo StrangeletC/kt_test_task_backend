@@ -4,7 +4,7 @@ namespace App\Tests\Feature\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
-use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
+use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class UserResourceTest extends ApiTestCase
 {
-    use ReloadDatabaseTrait;
+    use RefreshDatabaseTrait;
 
     public function testGetOneItem(): void
     {
@@ -105,6 +105,24 @@ class UserResourceTest extends ApiTestCase
             '@type' => 'User',
             'firstName' => $updatedUser['firstName'],
         ]);
+    }
+
+    public function testDeleteUser(): void
+    {
+        $client = static::createClient();
+
+        $iri = $this->findIriBy(User::class, ['username' => 'ivan']);
+
+        $client->request('DELETE', $iri);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
+
+        self::assertNull(
+            static::$container
+                ->get('doctrine')
+                ->getRepository(User::class)
+                ->findOneBy(['username' => 'ivan'])
+        );
     }
 
     /**

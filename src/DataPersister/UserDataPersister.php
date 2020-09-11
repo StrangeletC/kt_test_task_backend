@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Controller\DataPersister;
+namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use App\Entity\Task;
-use App\Service\DateTimeHelper;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * Class TaskDataPersister
- * @package App\Controller\DataPersister
+ * Class UserDataPersister
+ * @package App\DataPersister
  */
-class TaskDataPersister implements DataPersisterInterface
+final class UserDataPersister implements DataPersisterInterface
 {
     /**
      * @var EntityManagerInterface
@@ -19,21 +19,21 @@ class TaskDataPersister implements DataPersisterInterface
     private EntityManagerInterface $entityManager;
 
     /**
-     * @var DateTimeHelper
+     * @var UserPasswordEncoderInterface
      */
-    private DateTimeHelper $dateTimeHelper;
+    private UserPasswordEncoderInterface  $passwordEncoder;
 
     /**
-     * TaskDataPersister constructor.
+     * UserCreateDataPersister constructor.
      * @param EntityManagerInterface $entityManager
-     * @param DateTimeHelper $dateTimeHelper
+     * @param UserPasswordEncoderInterface $passwordEncoder
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        DateTimeHelper $dateTimeHelper
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->entityManager = $entityManager;
-        $this->dateTimeHelper = $dateTimeHelper;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
@@ -41,31 +41,28 @@ class TaskDataPersister implements DataPersisterInterface
      */
     public function supports($data): bool
     {
-        return $data instanceof Task;
+        return $data instanceof User;
     }
 
     /**
-     * @param Task $data
+     * @param User $data
      * @inheritDoc
      */
     public function persist($data)
     {
-        $data->setCreatedAt($this->dateTimeHelper->getCurrentDateTime());
-        $data->setComplete(false);
+        $password = $this->passwordEncoder->encodePassword($data, $data->getPassword());
+        $data->setPassword($password);
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }
 
     /**
-     * @param Task $data
      * @inheritDoc
      */
     public function remove($data)
     {
-        $data->setDeletedAt($this->dateTimeHelper->getCurrentDateTime());
-
-        $this->entityManager->persist($data);
+        $this->entityManager->remove($data);
         $this->entityManager->flush();
     }
 }

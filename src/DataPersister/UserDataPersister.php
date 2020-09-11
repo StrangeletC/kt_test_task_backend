@@ -3,6 +3,7 @@
 namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -58,10 +59,18 @@ final class UserDataPersister implements DataPersisterInterface
     }
 
     /**
+     * @param User $data
      * @inheritDoc
      */
     public function remove($data)
     {
+        $tasks = $data->getTasks();
+
+        /** @var Task $task */
+        foreach ($tasks as $task) {
+            $data->removeTask($task);
+        }
+
         $this->entityManager->remove($data);
         $this->entityManager->flush();
     }

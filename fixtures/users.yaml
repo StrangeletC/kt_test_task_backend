@@ -4,4 +4,5 @@ App\Entity\User:
     firstName: Ivan
     lastName: Ivanov
     email: ivan@example.com
-    password: password
+    password: password,
+    tasks: []

@@ -8,10 +8,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * Class UserCreateDataPersister
+ * Class UserDataPersister
  * @package App\Controller\DataPersister
  */
-final class UserCreateDataPersister implements DataPersisterInterface
+final class UserDataPersister implements DataPersisterInterface
 {
     /**
      * @var EntityManagerInterface

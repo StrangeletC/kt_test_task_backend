@@ -52,11 +52,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface
 {
-    public const USER_STATUS_ACTIVE = 0;
-    public const USER_STATUS_INACTIVE = 1;
-
-    public const USER_STATUS_DEFAULT = self::USER_STATUS_ACTIVE;
-
     /**
      * @var int
      *
@@ -120,17 +115,6 @@ class User implements UserInterface
      * @Groups({"user:write"})
      */
     private string $password;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     *
-     * @Groups({"user"})
-     *
-     * @Groups({"user:read"})
-     */
-    private int $status;
 
     /**
      * @var Collection|Task[]
@@ -268,25 +252,6 @@ class User implements UserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatus(): int
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param int $status
-     * @return $this
-     */
-    public function setStatus(int $status): self
-    {
-        $this->status = $status;
 
         return $this;
     }

@@ -22,7 +22,7 @@ final class UserDataPersister implements DataPersisterInterface
     /**
      * @var UserPasswordEncoderInterface
      */
-    private UserPasswordEncoderInterface  $passwordEncoder;
+    private UserPasswordEncoderInterface $passwordEncoder;
 
     /**
      * UserCreateDataPersister constructor.

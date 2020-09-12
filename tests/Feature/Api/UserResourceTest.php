@@ -2,7 +2,6 @@
 
 namespace App\Tests\Feature\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class UserResourceTest
  * @package App\Tests\Feature\Api
  */
-class UserResourceTest extends ApiTestCase
+class UserResourceTest extends BaseApiTest
 {
     use RefreshDatabaseTrait;
 
@@ -155,12 +154,7 @@ class UserResourceTest extends ApiTestCase
 
         self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
 
-        self::assertNull(
-            static::$container
-                ->get('doctrine')
-                ->getRepository(User::class)
-                ->findOneBy(['username' => 'ivan'])
-        );
+        self::assertNull($this->getUserFixture());
     }
 
     /**

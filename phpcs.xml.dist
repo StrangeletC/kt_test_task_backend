@@ -17,6 +17,7 @@
     <file>tests/</file>
 
     <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/var/*</exclude-pattern>
     <exclude-pattern>src/Kernel.php</exclude-pattern>
     <exclude-pattern>tests/bootstrap.php</exclude-pattern>
     <exclude-pattern>*/public/*</exclude-pattern>

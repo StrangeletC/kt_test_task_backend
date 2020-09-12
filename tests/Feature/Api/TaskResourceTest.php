@@ -102,6 +102,43 @@ class TaskResourceTest extends BaseApiTest
         self::assertMatchesResourceItemJsonSchema(Task::class);
     }
 
+    public function testUpdate(): void
+    {
+        $task = $this->getTaskFixture();
+        $user = $this->getUserFixture();
+
+        $userIri = $this->findIriBy(User::class, ['username' => $user->getUsername()]);
+        $taskIri = $this->findIriBy(Task::class, ['id' => $task->getId()]);
+
+        $updatedTask = [
+            'title' => 'Another title'
+        ];
+
+        static::createClient()->request(
+            'PUT',
+            $taskIri,
+            [
+                'json' => $updatedTask
+            ]
+        );
+
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        self::assertJsonContains(
+            [
+                '@context' => '/api/contexts/Task',
+                '@id' => $taskIri,
+                '@type' => 'Task',
+                'id' => $task->getId(),
+                'user' => $userIri,
+                'title' => $updatedTask['title'],
+            ]
+        );
+
+        self::assertMatchesResourceItemJsonSchema(Task::class);
+    }
+
     /**
      * @return Task
      */

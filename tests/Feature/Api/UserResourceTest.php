@@ -127,7 +127,7 @@ class UserResourceTest extends BaseApiTest
             'firstName' => 'Bob'
         ];
 
-        $r =$client->request(
+        $client->request(
             'PUT',
             $iri,
             [

@@ -2,52 +2,114 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TaskRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=TaskRepository::class)
+ *
+ * @ApiResource(
+ *     normalizationContext={"groups"={"task:read"}},
+ *     denormalizationContext={"groups"={"task:write"}},
+ *     itemOperations={
+ *          "get"={
+ *              "method"="GET",
+ *              "path"="/task/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
+ *          "delete"={
+ *              "method"="DELETE",
+ *              "path"="/task/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
+ *          "update"={
+ *              "method"="PUT",
+ *              "path"="/task/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
+ *     },
+ *     collectionOperations={
+ *          "get"={
+ *              "method"="GET",
+ *              "path"="/tasks",
+ *          },
+ *          "create"={
+ *              "method"="POST",
+ *              "path"="/tasks",
+ *          },
+ *     },
+ * )
  */
 class Task
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     *
+     * @Groups({"task:read"})
      */
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=false)
+     * @var User|null $user
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="tasks")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @Groups({"task:read", "task:write"})
      */
-    private int $user_id;
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Groups({"task"})
+     *
+     * @Groups({"task:read", "task:write"})
      */
     private string $title;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @Groups({"task"})
+     *
+     * @Groups({"task:read", "task:write"})
      */
-    private string $description;
+    private $description = null;
 
     /**
      * @ORM\Column(type="boolean", length=255)
+     *
+     * @Groups({"task"})
+     *
+     * @Groups({"task:read"})
      */
     private bool $complete;
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @Groups({"task"})
+     *
+     * @Groups({"task:read"})
      */
     private DateTimeInterface $created_at;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var DateTimeInterface|null
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @Groups({"task:read"})
      */
-    private DateTimeInterface $deleted_at;
+    private $deleted_at = null;
 
     /**
      * @return int
@@ -58,20 +120,20 @@ class Task
     }
 
     /**
-     * @return int
+     * @return User
      */
-    public function getUserId(): int
+    public function getUser(): User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
     /**
-     * @param int $user_id
+     * @param User|null $user
      * @return $this
      */
-    public function setUserId(int $user_id): self
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
@@ -115,9 +177,9 @@ class Task
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getComplete(): string
+    public function getComplete(): bool
     {
         return $this->complete;
     }

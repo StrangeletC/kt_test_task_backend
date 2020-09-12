@@ -16,14 +16,12 @@ class UserResourceTest extends BaseApiTest
 
     public function testGetOneItem(): void
     {
-        $client = static::createClient();
-
         $iri = $this->findIriBy(User::class, ['username' => 'ivan']);
 
-        $client->request('GET', $iri);
+        static::createClient()->request('GET', $iri);
 
         self::assertResponseIsSuccessful();
-        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertCorrectHeaders();
 
         self::assertJsonContains(
             [
@@ -63,7 +61,7 @@ class UserResourceTest extends BaseApiTest
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertCorrectHeaders();
 
         self::assertJsonContains(
             [
@@ -99,7 +97,7 @@ class UserResourceTest extends BaseApiTest
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
-        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertCorrectHeaders();
 
         self::assertJsonContains(
             [
@@ -119,15 +117,13 @@ class UserResourceTest extends BaseApiTest
 
     public function testUpdateUser(): void
     {
-        $client = static::createClient();
-
         $iri = $this->findIriBy(User::class, ['username' => 'ivan']);
 
         $updatedUser = [
             'firstName' => 'Bob'
         ];
 
-        $client->request(
+        static::createClient()->request(
             'PUT',
             $iri,
             [
@@ -136,6 +132,8 @@ class UserResourceTest extends BaseApiTest
         );
 
         self::assertResponseIsSuccessful();
+        $this->assertCorrectHeaders();
+
         self::assertJsonContains([
             '@context' => '/api/contexts/User',
             '@id' => $iri,
@@ -146,11 +144,9 @@ class UserResourceTest extends BaseApiTest
 
     public function testDeleteUser(): void
     {
-        $client = static::createClient();
-
         $iri = $this->findIriBy(User::class, ['username' => 'ivan']);
 
-        $client->request('DELETE', $iri);
+        static::createClient()->request('DELETE', $iri);
 
         self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
 

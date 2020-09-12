@@ -24,7 +24,7 @@ class TaskResourceTest extends BaseApiTest
         $response = static::createClient()->request('GET', $route);
 
         self::assertResponseIsSuccessful();
-        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertCorrectHeaders();
 
         self::assertJsonContains(
             [
@@ -49,7 +49,7 @@ class TaskResourceTest extends BaseApiTest
         static::createClient()->request('GET', $route);
 
         self::assertResponseIsSuccessful();
-        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertCorrectHeaders();
 
         self::assertJsonContains(
             [
@@ -86,7 +86,7 @@ class TaskResourceTest extends BaseApiTest
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertCorrectHeaders();
 
         self::assertJsonContains(
             [
@@ -123,7 +123,7 @@ class TaskResourceTest extends BaseApiTest
         );
 
         self::assertResponseIsSuccessful();
-        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertCorrectHeaders();
 
         self::assertJsonContains(
             [

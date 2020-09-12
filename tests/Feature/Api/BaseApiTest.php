@@ -35,4 +35,9 @@ abstract class BaseApiTest extends ApiTestCase
             ->getRepository(User::class)
             ->findOneBy(['username' => 'ivan']);
     }
+
+    protected function assertCorrectHeaders(): void
+    {
+        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+    }
 }

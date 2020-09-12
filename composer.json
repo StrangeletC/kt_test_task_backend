@@ -30,6 +30,7 @@
         "hautelook/alice-bundle": "^2.7",
         "justinrainbow/json-schema": "^5.2",
         "phpunit/phpunit": "8",
+        "squizlabs/php_codesniffer": "*",
         "symfony/browser-kit": "5.1.*",
         "symfony/http-client": "5.1.*",
         "symfony/maker-bundle": "^1.21",

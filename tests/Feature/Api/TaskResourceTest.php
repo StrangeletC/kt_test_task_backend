@@ -3,7 +3,9 @@
 namespace App\Tests\Feature\Api;
 
 use App\Entity\Task;
+use App\Entity\User;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TaskResourceTest
@@ -58,7 +60,46 @@ class TaskResourceTest extends BaseApiTest
             ]
         );
 
-        self::assertMatchesResourceCollectionJsonSchema(Task::class);
+        self::assertMatchesResourceItemJsonSchema(Task::class);
+    }
+
+    public function testCreate(): void
+    {
+        $user = $this->getUserFixture();
+
+        $userIri = $this->findIriBy(User::class, ['username' => $user->getUsername()]);
+
+        $newTask = [
+            'user' => $userIri,
+            'title' => 'Task title',
+            'description' => 'Task description'
+        ];
+
+        $route = '/api/tasks';
+
+        static::createClient()->request(
+            'POST',
+            $route,
+            [
+                'json' => $newTask
+            ]
+        );
+
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+        self::assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        self::assertJsonContains(
+            [
+                '@context' => '/api/contexts/Task',
+                '@type' => 'Task',
+                'user' => $newTask['user'],
+                'title' => $newTask['title'],
+                'description' => $newTask['description'],
+                'complete' => false,
+            ]
+        );
+
+        self::assertMatchesResourceItemJsonSchema(Task::class);
     }
 
     /**

@@ -19,8 +19,10 @@
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>src/Kernel.php</exclude-pattern>
     <exclude-pattern>tests/bootstrap.php</exclude-pattern>
-    <exclude-pattern>public/index.php</exclude-pattern>
+    <exclude-pattern>*/public/*</exclude-pattern>
     <exclude-pattern>*/.phpunit/*</exclude-pattern>
+    <exclude-pattern>*/.docker/*</exclude-pattern>
+    <exclude-pattern>*/fixtures/*</exclude-pattern>
 
 
 

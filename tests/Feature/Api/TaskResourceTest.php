@@ -139,6 +139,22 @@ class TaskResourceTest extends BaseApiTest
         self::assertMatchesResourceItemJsonSchema(Task::class);
     }
 
+    public function testSoftDelete(): void
+    {
+        $task = $this->getTaskFixture();
+
+        $iri = $this->findIriBy(Task::class, ['id' => $task->getId()]);
+
+        static::createClient()->request('DELETE', $iri);
+
+        $softDeletedTask = $this->getDoctrineContainer()
+            ->getRepository(Task::class)
+            ->findOneBy(['id' => $task->getId()]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
+        self::assertNotEmpty($softDeletedTask->getDeletedAt());
+    }
+
     /**
      * @return Task
      */

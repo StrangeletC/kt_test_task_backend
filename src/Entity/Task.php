@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\TaskRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,6 +44,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "path"="/tasks",
  *          },
  *     },
+ * ),
+ * @ApiFilter(
+ *     OrderFilter::class,
+ *     properties={"id", "title", "description", "complete"},
+ *     arguments={"orderParameterName"="order"}
+ * )
+ * @ApiFilter(
+ *     SearchFilter::class,
+ *     properties={"title": "description"}
  * )
  */
 class Task
@@ -67,9 +79,9 @@ class Task
     /**
      * @ORM\Column(type="string", length=255)
      *
-     * @Groups({"task"})
-     *
      * @Groups({"task:read", "task:write"})
+     *
+     * @ApiFilter(SearchFilter::class, strategy="ipartial")
      */
     private string $title;
 
@@ -78,16 +90,14 @@ class Task
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      *
-     * @Groups({"task"})
-     *
      * @Groups({"task:read", "task:write"})
+     *
+     * @ApiFilter(SearchFilter::class, strategy="ipartial")
      */
     private $description = null;
 
     /**
      * @ORM\Column(type="boolean", length=255)
-     *
-     * @Groups({"task"})
      *
      * @Groups({"task:read"})
      */
@@ -95,8 +105,6 @@ class Task
 
     /**
      * @ORM\Column(type="datetime")
-     *
-     * @Groups({"task"})
      *
      * @Groups({"task:read"})
      */

@@ -59,13 +59,13 @@ Now application ready on [http://localhost:8001/](http://localhost:8001/)
 Run phpcs
 
 ```shell script
-.\vendor\bin\phpcs
+docker exec -it kt_test_php vendor/bin/phpcs
 ```
 
 Run tests
 
 ```shell script
-.\vendor\bin\simple-phpunit
+php .\bin\phpunit
 ```
 
 ## Elasticsearch

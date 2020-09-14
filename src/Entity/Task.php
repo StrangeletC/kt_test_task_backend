@@ -4,12 +4,12 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\TaskRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ORM\Entity(repositoryClass=TaskRepository::class)
@@ -108,7 +108,7 @@ class Task
      *
      * @Groups({"task:read"})
      */
-    private DateTimeInterface $created_at;
+    private DateTimeInterface $createdAt;
 
     /**
      * @var DateTimeInterface|null
@@ -117,7 +117,7 @@ class Task
      *
      * @Groups({"task:read"})
      */
-    private $deleted_at = null;
+    private $deletedAt = null;
 
     /**
      * @return int
@@ -208,16 +208,16 @@ class Task
      */
     public function getCreatedAt(): DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
-     * @param DateTimeInterface $created_at
+     * @param $createdAt
      * @return $this
      */
-    public function setCreatedAt(DateTimeInterface $created_at): self
+    public function setCreatedAt($createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -227,16 +227,16 @@ class Task
      */
     public function getDeletedAt(): ?DateTimeInterface
     {
-        return $this->deleted_at;
+        return $this->deletedAt;
     }
 
     /**
-     * @param DateTimeInterface $deleted_at
+     * @param DateTimeInterface|null $deletedAt
      * @return $this
      */
-    public function setDeletedAt(DateTimeInterface $deleted_at): self
+    public function setDeletedAt(?DateTimeInterface $deletedAt): self
     {
-        $this->deleted_at = $deleted_at;
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }

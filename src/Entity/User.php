@@ -59,7 +59,7 @@ class User implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(name="id", type="integer")
      */
-    protected int $id;
+    private int $id;
 
     /**
      * @var string
@@ -69,7 +69,7 @@ class User implements UserInterface
      *
      * @Groups({"user:read", "user:write"})
      */
-    protected string $username;
+    private string $username;
 
     /**
      * @var string|null
@@ -82,7 +82,7 @@ class User implements UserInterface
      *
      * @Groups({"user:read", "user:write"})
      */
-    protected $firstName = null;
+    private $firstName = null;
 
     /**
      * @var string|null
@@ -95,7 +95,7 @@ class User implements UserInterface
      *
      * @Groups({"user:read", "user:write"})
      */
-    protected $lastName = null;
+    private $lastName = null;
 
     /**
      * @var string

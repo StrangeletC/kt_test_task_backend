@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   server:
+    container_name: kt_test_server
     image: nginx:latest
     restart: always
     volumes:
@@ -9,7 +10,10 @@ services:
       - ./docker/nginx/server.conf:/etc/nginx/conf.d/default.conf
     ports:
       - 8001:80
+    networks:
+      - kt_test
   php:
+    container_name: kt_test_php
     build:
       context: .
       dockerfile: docker/php/Dockerfile
@@ -18,13 +22,19 @@ services:
       - .:/var/www/kt_test_task_backend/
     environment:
       APP_ENV: dev
+    networks:
+      - kt_test
   composer:
+    container_name: kt_test_php_composer
     image: composer:latest
     command: ["composer", "install"]
     volumes:
       - .:/app
+    networks:
+      - kt_test
   db:
     image: postgres:12
+    container_name: kt_test_db
     restart: always
     ports:
       - 5499:5432
@@ -32,3 +42,48 @@ services:
       POSTGRES_PASSWORD: db_password
       POSTGRES_USER: db_user
       POSTGRES_DB: test_db
+    networks:
+      - kt_test
+  elasticsearch:
+    image: elasticsearch:7.9.1
+    container_name: kt_test_elastic01
+    environment:
+      - node.name=elasticsearch01
+      - cluster.name=elastic-docker-cluster
+      - discovery.seed_hosts=elasticsearch01
+      - cluster.initial_master_nodes=elasticsearch01
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elsaticData01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - kt_test
+  logstash:
+    image: logstash:7.9.1
+    container_name: kt_test_logstash
+    volumes:
+      - ./docker/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./docker/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./docker/logstash/jdbc/postgresql-42.2.6.jar:/usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.6.jar:ro
+    ports:
+      - 5044:5044
+      - 9600:9600
+    environment:
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+    networks:
+      - kt_test
+
+volumes:
+  elsaticData01:
+    driver: local
+networks:
+  kt_test:
+    driver: bridge

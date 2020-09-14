@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TaskRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ORM\Entity(repositoryClass=TaskRepository::class)
@@ -14,6 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     normalizationContext={"groups"={"task:read"}},
  *     denormalizationContext={"groups"={"task:write"}},
+ *     attributes={"pagination_items_per_page"=20},
  *     itemOperations={
  *          "get"={
  *              "method"="GET",
@@ -41,6 +45,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "path"="/tasks",
  *          },
  *     },
+ * ),
+ * @ApiFilter(
+ *     OrderFilter::class,
+ *     properties={"id", "title", "description", "complete"},
+ *     arguments={"orderParameterName"="order"}
+ * )
+ * @ApiFilter(
+ *     SearchFilter::class,
+ *     properties={"title": "description"}
  * )
  */
 class Task
@@ -67,9 +80,9 @@ class Task
     /**
      * @ORM\Column(type="string", length=255)
      *
-     * @Groups({"task"})
-     *
      * @Groups({"task:read", "task:write"})
+     *
+     * @ApiFilter(SearchFilter::class, strategy="ipartial")
      */
     private string $title;
 
@@ -78,16 +91,14 @@ class Task
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      *
-     * @Groups({"task"})
-     *
      * @Groups({"task:read", "task:write"})
+     *
+     * @ApiFilter(SearchFilter::class, strategy="ipartial")
      */
     private $description = null;
 
     /**
      * @ORM\Column(type="boolean", length=255)
-     *
-     * @Groups({"task"})
      *
      * @Groups({"task:read"})
      */
@@ -96,11 +107,9 @@ class Task
     /**
      * @ORM\Column(type="datetime")
      *
-     * @Groups({"task"})
-     *
      * @Groups({"task:read"})
      */
-    private DateTimeInterface $created_at;
+    private DateTimeInterface $createdAt;
 
     /**
      * @var DateTimeInterface|null
@@ -109,7 +118,7 @@ class Task
      *
      * @Groups({"task:read"})
      */
-    private $deleted_at = null;
+    private $deletedAt = null;
 
     /**
      * @return int
@@ -200,16 +209,16 @@ class Task
      */
     public function getCreatedAt(): DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
-     * @param DateTimeInterface $created_at
+     * @param $createdAt
      * @return $this
      */
-    public function setCreatedAt(DateTimeInterface $created_at): self
+    public function setCreatedAt($createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -219,16 +228,16 @@ class Task
      */
     public function getDeletedAt(): ?DateTimeInterface
     {
-        return $this->deleted_at;
+        return $this->deletedAt;
     }
 
     /**
-     * @param DateTimeInterface $deleted_at
+     * @param DateTimeInterface|null $deletedAt
      * @return $this
      */
-    public function setDeletedAt(DateTimeInterface $deleted_at): self
+    public function setDeletedAt(?DateTimeInterface $deletedAt): self
     {
-        $this->deleted_at = $deleted_at;
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }

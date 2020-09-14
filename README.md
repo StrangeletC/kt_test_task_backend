@@ -2,6 +2,10 @@
 
 Application address [http://localhost:8001/](http://localhost:8001/)
 
+API documentation address [http://localhost:8001/api/docs](http://localhost:8001/api/docs)
+
+Postman API collection placed in file `kt_test.postman_collection.json`
+
 ## Run project
 
 Build and start docker container:

@@ -24,13 +24,13 @@ docker-compose up -d
 After composer install dependencies run migrations:
 
 ```shell script
-docker exec -it kt_test_task_backend_php_1 php bin/console doctrine:migrations:migrate -n
+docker exec -it kt_test_php php bin/console doctrine:migrations:migrate -n
 ```
 
 And load fixtures
 
 ```
-docker exec -it kt_test_task_backend_php_1 php bin/console hautelook:fixtures:load -n
+docker exec -it kt_test_php php bin/console hautelook:fixtures:load -n
 ```
 
 Now application ready on [http://localhost:8001/](http://localhost:8001/)

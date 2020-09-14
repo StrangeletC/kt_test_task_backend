@@ -44,14 +44,14 @@ services:
       POSTGRES_DB: test_db
     networks:
       - kt_test
-  elastic:
+  elasticsearch:
     image: elasticsearch:7.9.1
     container_name: kt_test_elastic01
     environment:
-      - node.name=elastic01
+      - node.name=elasticsearch01
       - cluster.name=elastic-docker-cluster
-      - discovery.seed_hosts=elastic01
-      - cluster.initial_master_nodes=elastic01
+      - discovery.seed_hosts=elasticsearch01
+      - cluster.initial_master_nodes=elasticsearch01
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -64,6 +64,23 @@ services:
       - 9200:9200
     networks:
       - kt_test
+  logstash:
+    image: logstash:7.9.1
+    container_name: kt_test_logstash
+    volumes:
+      - ./docker/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./docker/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./docker/logstash/jdbc/postgresql-42.2.6.jar:/usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.6.jar:ro
+    ports:
+      - 5044:5044
+      - 9600:9600
+    environment:
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+    networks:
+      - kt_test
+
 volumes:
   elsaticData01:
     driver: local

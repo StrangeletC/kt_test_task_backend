@@ -13,6 +13,14 @@ Build and start docker container:
 docker-compose up -d
 ```
 
+Wait few minutes after composer install dependencies. After the installation is complete, the composer service stops.
+```
+kt_test_php_composer | Executing script cache:clear [OK]
+kt_test_php_composer | Executing script assets:install public
+kt_test_php_composer |  [OK]
+kt_test_php_composer exited with code 0
+```
+
 Run init script
 
 (Windows)

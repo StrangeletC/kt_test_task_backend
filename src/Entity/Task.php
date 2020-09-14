@@ -17,6 +17,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  * @ApiResource(
  *     normalizationContext={"groups"={"task:read"}},
  *     denormalizationContext={"groups"={"task:write"}},
+ *     attributes={"pagination_items_per_page"=20},
  *     itemOperations={
  *          "get"={
  *              "method"="GET",

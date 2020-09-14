@@ -15,7 +15,8 @@ class TaskResourceTest extends BaseApiTest
 {
     use RefreshDatabaseTrait;
 
-    private int $taskFixturesCount = 20;
+    private int $taskFixturesPageCount = 20;
+    private int $taskFixturesTotalCount = 50;
 
     public function testGetCollection(): void
     {
@@ -32,11 +33,11 @@ class TaskResourceTest extends BaseApiTest
                 '@id' => '/api/tasks',
                 '@type' => 'hydra:Collection',
                 'hydra:member' => [],
-                'hydra:totalItems' => $this->taskFixturesCount,
+                'hydra:totalItems' => $this->taskFixturesTotalCount,
             ]
         );
 
-        self::assertCount($this->taskFixturesCount, $response->toArray()['hydra:member']);
+        self::assertCount($this->taskFixturesPageCount, $response->toArray()['hydra:member']);
         self::assertMatchesResourceCollectionJsonSchema(Task::class);
     }
 
